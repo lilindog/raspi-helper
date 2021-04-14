@@ -1,0 +1,8 @@
+{
+  "name": "raspberry-helper",
+  "version": "0.0.1",
+  "description": "eapberry pi tools",
+  "main": "index.js",
+  "author": "lilindog<lilin@lilin.site>",
+  "license": "ISC"
+}
