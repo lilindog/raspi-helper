@@ -1,12 +1,13 @@
 "use strict";
 
 const { execSync } = require("child_process");
-const { ScanNode, ListNode } = require("./type");
+const { ScanNode, ListNode, Status } = require("./type");
 const PRE_CMD = `wpa_cli -i wlan0 `;
 
 Object.assign(exports, {
     ScanNode,
-    ListNode
+    ListNode,
+    Status
 });
 
 function err (msg = "") {
@@ -23,9 +24,9 @@ exports.scan = () => {
     return f().map(row => {
         const [ bssid, frequency, signalLevel, flags, ssid ] = Array.from(reg.exec(row)).slice(1);
         reg.lastIndex = 0;
-        return {
+        return new ScanNode({
             bssid, frequency, signalLevel, flags, ssid
-        };
+        });
     });
     function f () {
         execSync(`${PRE_CMD} scan`);
@@ -47,11 +48,11 @@ exports.list = () => {
     ).map(row => {
         const res = reg.exec(row);
         reg.lastIndex = 0;
-        return {
+        return new ListNode({
             id: res[1],
             ssid: res[2],
             state: res[4]
-        };
+        });
     });
 };
 
@@ -93,4 +94,48 @@ exports.edit = (id, ssid, psk, key_mgmt) => {
     key_mgmt !== undefined && execSync(`${PRE_CMD} set_network ${id} key_mgmt '"${key_mgmt}"'`);
     execSync(`${PRE_CMD} set_network ${id} psk '"${psk}"'`);
     execSync(`${PRE_CMD} save_config`);
+};
+
+/**
+ * 查看无线连接状态
+ * 
+ * @return {Status} 
+ */
+exports.status = () => {
+    return new Status(execSync(`${PRE_CMD} status`).toString().replace(/\s+/g, " ").split(" ").reduce((t, c) => {
+        const [key, value] = c.split(/\s*=\s*/);
+        if (Status.option[key] !== undefined) t[key] = value;
+        return t;
+    }, {}));
+};
+
+/**
+ * 连接 wifi, 若15秒没拿到分配的ip返回false
+ * 
+ * @param  {Number} id 连接列表中的那个wifi
+ * @return {Boolean}
+ */
+exports.connect = id => {
+    const time = new Date().getTime();
+    execSync(`${PRE_CMD} select_network ${id}`);
+    return f();
+    function f () {
+        const { ip_address: ip, wpa_state: state } = exports.status();
+        if (ip || new Date().getTime() - time >= 15000) {
+            if (ip && state === "COMPLETED") return true;
+            else {
+                exports.disconnect(id);
+                return false;
+            }
+        } else return f();
+    }
+};
+
+/**
+ * 断开 wifi 连接 
+ * 
+ * @param {Number} id 需要短wifi的id
+ */
+exports.disconnect = id => {
+    execSync(`${PRE_CMD} disable_network ${id}`);
 };

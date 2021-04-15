@@ -24,6 +24,22 @@ exports.ScanNode = class ScanNode {
     constructor (option = {}) { initOption(this, ScanNode.option, option); }
 };
 
+/**
+ * wifi 状态结构类 
+ */
+exports.Status = class Status {
+    static option = {
+        ssid: "",
+        key_mgmt: "",
+        wpa_state: "",
+        ip_address: "",
+        bssid: "",
+        freq: 0,
+        id: 0
+    }
+    constructor (option = {}) { initOption(this, Status.option, option); }
+};
+
 function initOption (context = {}, templateStruct = {}, option = {}) {
     Object.keys(templateStruct).forEach(k => context[k] = option[k] !== undefined ? option[k] : templateStruct[k]);
 }
