@@ -1,4 +1,4 @@
-# Raspberry-helper 之 WIFI 管理
+# WIFI 管理
 
 对 wpa_cli 进行了封装，目前阶段只针对了 Raspberry PI4 进行了实测通过。
 
