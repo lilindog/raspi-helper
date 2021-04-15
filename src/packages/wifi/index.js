@@ -21,7 +21,7 @@ function err (msg = "") {
 exports.scan = () => {
     const reg = /((?:[\d\w]{2}:){5}[\d\w]{2})\t+(\d{4})\t+-(\d{2,})\t+((?:\[[\d-+\w]+\])+)\t+([^\n]+)/ig;
     return f().map(row => {
-        const [ bssid,  frequency, signalLevel, flags, ssid ] = Array.from(reg.exec(row)).slice(1);
+        const [ bssid, frequency, signalLevel, flags, ssid ] = Array.from(reg.exec(row)).slice(1);
         reg.lastIndex = 0;
         return {
             bssid, frequency, signalLevel, flags, ssid
@@ -29,8 +29,8 @@ exports.scan = () => {
     });
     function f () {
         execSync(`${PRE_CMD} scan`);
-        const res =  execSync(`${PRE_CMD} scan_result`).toString().match(reg);
-        if (res)  return res;
+        const res = execSync(`${PRE_CMD} scan_result`).toString().match(reg);
+        if (res) return res;
         else return f();
     }
 };
@@ -76,7 +76,7 @@ exports.remove = id => {
  */
 exports.add = (ssid, psk, key_mgmt) => {
     const id = Number(execSync(`${PRE_CMD} add_network`).toString().replace(/\s+/, ""));
-    exports.edit(id, ssid, psk,key_mgmt);
+    exports.edit(id, ssid, psk, key_mgmt);
 };
 
 /**
