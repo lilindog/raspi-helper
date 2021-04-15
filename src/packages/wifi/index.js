@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const { execSync } = require("child_process");
 const { ScanNode, ListNode } = require("./type");
@@ -25,7 +25,7 @@ exports.scan = () => {
         reg.lastIndex = 0;
         return {
             bssid, frequency, signalLevel, flags, ssid
-        }
+        };
     });
     function f () {
         execSync(`${PRE_CMD} scan`);
@@ -33,7 +33,7 @@ exports.scan = () => {
         if (res)  return res;
         else return f();
     }
-}
+};
 
 /**
  * 列出连接过的wifi 
@@ -51,9 +51,9 @@ exports.list = () => {
             id: res[1],
             ssid: res[2],
             state: res[4]
-        }
+        };
     });
-}
+};
 
 /**
  * 删除连接过的wifi 
@@ -65,7 +65,7 @@ exports.remove = id => {
         execSync(`wpa_cli -i wlan0 remove_network ${id}`);
         execSync(`${PRE_CMD} save_config`);
     }
-}
+};
 
 /**
  * 增加新的wifi连接
@@ -77,7 +77,7 @@ exports.remove = id => {
 exports.add = (ssid, psk, key_mgmt) => {
     const id = Number(execSync(`${PRE_CMD} add_network`).toString().replace(/\s+/, ""));
     exports.edit(id, ssid, psk,key_mgmt);
-}
+};
 
 /**
  * 修改已存wifi的账密、加密方式
@@ -93,4 +93,4 @@ exports.edit = (id, ssid, psk, key_mgmt) => {
     key_mgmt !== undefined && execSync(`${PRE_CMD} set_network ${id} key_mgmt '"${key_mgmt}"'`);
     execSync(`${PRE_CMD} set_network ${id} psk '"${psk}"'`);
     execSync(`${PRE_CMD} save_config`);
-}
+};

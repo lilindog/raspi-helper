@@ -7,8 +7,8 @@ exports.ListNode = class ListNode {
         ssid: "",
         state: ""
     }
-    constructor (option = {}) { initOption(this, ListNode.option, option) }
-}
+    constructor (option = {}) { initOption(this, ListNode.option, option); }
+};
 
 /**
  * 扫描周围wifi列表子元素 
@@ -21,8 +21,8 @@ exports.ScanNode = class ScanNode {
         flags: "", 
         ssid: ""
     }
-    constructor (option = {}) { initOption(this, ScanNode.option, option) }
-}
+    constructor (option = {}) { initOption(this, ScanNode.option, option); }
+};
 
 function initOption (context = {}, templateStruct = {}, option = {}) {
     Object.keys(templateStruct).forEach(k => context[k] = option[k] !== undefined ? option[k] : templateStruct[k]);

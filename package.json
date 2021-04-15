@@ -4,5 +4,14 @@
   "description": "eapberry pi tools",
   "main": "index.js",
   "author": "lilindog<lilin@lilin.site>",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "chalk": "^4.1.0",
+    "eslint": "^7.24.0"
+  },
+  "scripts": {
+    "preinstall": "node scripts/init-githooks.js",
+    "lint": "eslint src/"
+  }
 }

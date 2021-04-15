@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const wifi = require("./packages/wifi/index");
 
