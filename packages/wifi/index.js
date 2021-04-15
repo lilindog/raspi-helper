@@ -1,12 +1,22 @@
 "use strict"
 
 const { execSync } = require("child_process");
+const { ScanNode, ListNode } = require("./type");
 const PRE_CMD = `wpa_cli -i wlan0 `;
+
+Object.assign(exports, {
+    ScanNode,
+    ListNode
+});
+
+function err (msg = "") {
+    throw "[ wifi-manager ] error: " + msg;
+}
 
 /**
  * 扫描周围的wifi, 没有ssid的wifi不会列出来
  * 
- * @return {Array} 
+ * @return {Array<ScanNode>} 
  */
 exports.scan = () => {
     const reg = /((?:[\d\w]{2}:){5}[\d\w]{2})\t+(\d{4})\t+-(\d{2,})\t+((?:\[[\d-+\w]+\])+)\t+([^\n]+)/ig;
@@ -28,7 +38,7 @@ exports.scan = () => {
 /**
  * 列出连接过的wifi 
  * 
- * @return {Array} [{ id: String, ssid: String, state: CURRENT|DISABLED }, ...]
+ * @return {Array<ListNode>} [{ id: String, ssid: String, state: CURRENT|DISABLED }, ...]
  */
 exports.list = () => {
     const reg = /(\d+)\s+(\w+)\s+(\w+)\s\[(\w+)\]/ig;
@@ -83,8 +93,4 @@ exports.edit = (id, ssid, psk, key_mgmt) => {
     key_mgmt !== undefined && execSync(`${PRE_CMD} set_network ${id} key_mgmt '"${key_mgmt}"'`);
     execSync(`${PRE_CMD} set_network ${id} psk '"${psk}"'`);
     execSync(`${PRE_CMD} save_config`);
-}
-
-function err (msg = "") {
-    throw "[ wifi-manager ] error: " + msg;
 }

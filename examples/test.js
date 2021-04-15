@@ -2,5 +2,7 @@
 
 const { wifi } = require("../index");
 
-console.log(wifi.scan());
-console.log(wifi.list());
+// console.log(wifi);
+
+// console.log(wifi.scan());
+// console.log(wifi.list());
