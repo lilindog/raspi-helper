@@ -2,14 +2,17 @@
 
 const { wifi } = require("../src/index");
 
-if (!wifi.status().ip) {
-    console.log("连接wifi...");
-    wifi.connect(2);
-    console.log("已连接...");
+const status = wifi.status();
+const id = 1;
+
+if (!wifi.status().ip && status.wpa_state !== "COMPLETED") {
+    console.log("connecting wifi ...");
+    wifi.connect(id);
+    console.log("wifi connected!");
     console.log(wifi.status());
 } else {
-    console.log("已有wifi连接，正在断开...");
-    wifi.disconnect(2);
-    console.log("已断开...");
+    console.log("wifi connected, disconnecting...");
+    wifi.disconnect(id);
+    console.log("wifi disconnted!");
     console.log(wifi.status());
 }

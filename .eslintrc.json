@@ -55,6 +55,8 @@
         // 逗号后必须跟空格
         "comma-spacing": ["error"],
         // 逗号不能出现在行开头
-        "comma-style": ["error", "last"]
+        "comma-style": ["error", "last"],
+        // 允许在循环中使用常量自面量，如true。
+        "no-constant-condition": ["error", { "checkLoops": false }]
     }
 }

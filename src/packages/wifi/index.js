@@ -118,16 +118,10 @@ exports.status = () => {
 exports.connect = id => {
     const time = new Date().getTime();
     execSync(`${PRE_CMD} select_network ${id}`);
-    return f();
-    function f () {
+    while (true) {
         const { ip_address: ip, wpa_state: state } = exports.status();
-        if (ip || new Date().getTime() - time >= 15000) {
-            if (ip && state === "COMPLETED") return true;
-            else {
-                exports.disconnect(id);
-                return false;
-            }
-        } else return f();
+        if (ip && state === "COMPLETED") return true;
+        else if (new Date().getTime() - time >= 10000) return false;
     }
 };
 
