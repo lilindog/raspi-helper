@@ -1,5 +1,5 @@
 {
-  "name": "raspberry-helper",
+  "name": "raspi-helper",
   "version": "0.0.2",
   "description": "eapberry pi tools",
   "main": "src/index.js",
