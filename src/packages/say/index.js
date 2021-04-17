@@ -23,14 +23,14 @@ exports.say = async (text, value) => {
         buf = await value();
         if (!(buf instanceof Buffer)) throw "say 传入的自定义 text2Sound 函数返回值必须为 Buffer!";
     } else {
-        buf = defaultText2Sound(text, value);
+        buf = await defaultText2Sound(text, value);
     }
-    if (!execSync(tempDir)) mkdirSync(tempDir);
-    writeFileSync(buf, filePath);
+    if (!existsSync(tempDir)) mkdirSync(tempDir);
+    writeFileSync(filePath, buf);
     play();
     function play () {
         try {
-            execSync(`sox -v 1 ${tempDir}/${filePath}`);
+            execSync(`play -v 1 ${filePath}`);
         } catch (err) {
             throw "没有安装 sox，无法执行播放！";
         }
