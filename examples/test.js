@@ -3,7 +3,7 @@
 const { wifi, say } = require("../src/index");
 
 !async function () {
-    await say.say("你好", new say.say.defaultText2Sound.Option({ sescretId: "AKID44pO5VuY9TCg2KLOAujkYFbv8E3SMR4I", sescretKey: "J9k51nSinrWuWN6bstEJAmwpOhv6wOZc" }));
+    await say.say("你好", new say.say.defaultText2Sound.Option({ secretId: "AKID44pO5VuY9TCg2KLOAujkYFbv8E3SMR4I", secretKey: "J9k51nSinrWuWN6bstEJAmwpOhv6wOZc" }));
 }();
 
 // const status = wifi.status();

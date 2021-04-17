@@ -13,5 +13,8 @@
   "scripts": {
     "preinstall": "node scripts/init-githooks.js",
     "lint": "eslint src/"
+  },
+  "dependencies": {
+    "tencentcloud-sdk-nodejs": "^4.0.99"
   }
 }
