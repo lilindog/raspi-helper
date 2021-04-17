@@ -1,3 +1,7 @@
+"use strict";
+
+const { initOption } = require("../../util");
+
 /**
  * 连接过的wifi列表子元素 
  */
@@ -39,7 +43,3 @@ exports.Status = class Status {
     }
     constructor (option = {}) { initOption(this, Status.option, option); }
 };
-
-function initOption (context = {}, templateStruct = {}, option = {}) {
-    Object.keys(templateStruct).forEach(k => context[k] = option[k] !== undefined ? option[k] : templateStruct[k]);
-}
