@@ -63,7 +63,7 @@ exports.list = () => {
  */
 exports.remove = id => {
     if (exports.list().some(row => Number(row.id) === id)) {
-        execSync(`wpa_cli -i wlan0 remove_network ${id}`);
+        execSync(`${PRE_CMD} remove_network ${id}`);
         execSync(`${PRE_CMD} save_config`);
     }
 };
