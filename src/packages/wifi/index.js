@@ -62,7 +62,7 @@ exports.list = () => {
  * @param {Number} id
  */
 exports.remove = id => {
-    if (exports.list().some(row => Number(row.id) === id)) {
+    if (exports.list().some(row => Number(row.id) === Number(id))) {
         execSync(`${PRE_CMD} remove_network ${id}`);
         execSync(`${PRE_CMD} save_config`);
     }
