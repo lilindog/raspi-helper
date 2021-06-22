@@ -10,7 +10,7 @@ const SCRIPTS_DIR = "scripts";
 // 脚本前缀
 const SCRIPT_PREFIX = "githook_";
 
-process.env?.INIT_CWD.endsWith(process.env.npm_package_name) && main();
+process.env.INIT_CWD && process.env.INIT_CWD.endsWith(process.env.npm_package_name) && main();
 
 function main () {
     console.log("开始部署本地githooks >>");
