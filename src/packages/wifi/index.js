@@ -112,17 +112,31 @@ exports.status = () => {
 /**
  * 连接 wifi, 若15秒没拿到分配的ip返回false
  * 
- * @param  {Number} id 连接列表中的那个wifi
+ * @param  {Number}   id 连接列表中的那个wifi
+ * @param  {Function} cb 可选，不天返回Promise实例
  * @return {Boolean}
  */
-exports.connect = id => {
+exports.connect = async (id, cb) => {
     const time = new Date().getTime();
     execSync(`${PRE_CMD} select_network ${id}`);
-    while (true) {
+    let p, success, error;
+    if (!cb) p = new Promise((resolve, reject) => {
+        success = resolve;
+        error = reject;
+    });
+    let timer = setInterval(() => {
         const { ip_address: ip, wpa_state: state } = exports.status();
-        if (ip && state === "COMPLETED") return true;
-        else if (new Date().getTime() - time >= 10000) return false;
-    }
+        if (ip && state === "COMPLETED") {
+            clearInterval(timer);
+            p ? success() : cb();
+        }
+        else if (new Date().getTime() - time >= 15000) {
+            clearInterval(timer);
+            const err = new Error("wifi连接失败");
+            p ? error(err) : cb(err);
+        }
+    }, 500);
+    if (p) return p;
 };
 
 /**
