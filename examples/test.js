@@ -9,9 +9,6 @@ const { wifi, say } = require("../src/index");
     // }
 
     console.log(wifi.list());    
-    wifi.disconnect(0);
-    wifi.connect(0, err => {
-        if (err) console.log(err);
-        else console.log("链接成功");
-    });
+    wifi.add("Redmi", "123456798");
+    console.log(wifi.list());   
 }();

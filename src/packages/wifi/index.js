@@ -42,7 +42,7 @@ exports.scan = () => {
  * @return {Array<ListNode>} [{ id: String, ssid: String, state: CURRENT|DISABLED }, ...]
  */
 exports.list = () => {
-    const reg = /(\d+)\s+(\w+)\s+(\w+)\s\[(\w+)\]/ig;
+    const reg = /(\d+)\s+(?:(\w+)\s+)?(\w+)\s\[(\w+)\]/ig;
     return (
         (execSync(`${PRE_CMD} list_network`).toString()).match(reg) || []
     ).map(row => {
