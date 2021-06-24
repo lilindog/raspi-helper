@@ -71,13 +71,15 @@ exports.remove = id => {
 /**
  * 增加新的wifi连接
  * 
- * @param {String} ssid wifi名字
- * @param {String} psk  wifi密码
- * @param {String} key_mgmt wifi加密方式，不懂请参考相关资料
+ * @param  {String} ssid wifi名字
+ * @param  {String} psk  wifi密码
+ * @param  {String} key_mgmt wifi加密方式，不懂请参考相关资料
+ * @return {Number} id
  */
 exports.add = (ssid, psk, key_mgmt) => {
     const id = Number(execSync(`${PRE_CMD} add_network`).toString().replace(/\s+/, ""));
     exports.edit(Number(id), ssid, psk, key_mgmt);
+    return Number(id);
 };
 
 /**
