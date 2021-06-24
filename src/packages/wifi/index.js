@@ -137,7 +137,7 @@ exports.connect = async (id, cb) => {
             const err = new Error("wifi连接失败");
             p ? error(err) : cb(err);
         }
-    }, 500);
+    }, 1000);
     if (p) return p;
 };
 
