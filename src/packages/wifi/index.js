@@ -77,7 +77,7 @@ exports.remove = id => {
  */
 exports.add = (ssid, psk, key_mgmt) => {
     const id = Number(execSync(`${PRE_CMD} add_network`).toString().replace(/\s+/, ""));
-    exports.edit(id, ssid, psk, key_mgmt);
+    exports.edit(Number(id), ssid, psk, key_mgmt);
 };
 
 /**
@@ -89,7 +89,7 @@ exports.add = (ssid, psk, key_mgmt) => {
  * @param {String} key_mgmt 
  */
 exports.edit = (id, ssid, psk, key_mgmt) => {
-    if (!exports.list().some(i => Number(i.id) === id)) err("指定id的连接不存在");
+    if (!exports.list().some(i => Number(i.id) === Number(id))) err("指定id的连接不存在");
     execSync(`${PRE_CMD} set_network ${id} ssid '"${ssid}"'`);
     key_mgmt !== undefined && execSync(`${PRE_CMD} set_network ${id} key_mgmt '"${key_mgmt}"'`);
     execSync(`${PRE_CMD} set_network ${id} psk '"${psk}"'`);
