@@ -2,8 +2,11 @@
 
 const { exec } = require("child_process");
 const { mkdirSync, existsSync, writeFileSync } = require("fs");
+const { unlink } = require("fs").promises;
 const { defaultText2Sound } = require("./lib");
 const path = require("path");
+
+const TEMP = path.resolve(__dirname, "temp");
 
 /**
  * 文本发音，将文本转语音播放出来
@@ -13,7 +16,7 @@ const path = require("path");
  */
 exports.say = async (text, value) => {
     const 
-        tempDir = path.resolve(__dirname, "temp"),
+        tempDir = TEMP,
         filePath = path.resolve(tempDir, text + ".wav");
     if (existsSync(filePath)) {
         return play();
@@ -36,6 +39,21 @@ exports.say = async (text, value) => {
             });
         });
     }
+};
+
+/**
+ * 清除文本缓存
+ * 
+ * @param  {String} text 要删除语音缓存的文本 
+ * @return {Promise<Boolean>}
+ */
+exports.clearCache = async function (text = "") {
+    const filePath = path.resolve(TEMP, text + ".wav");
+    if (existsSync(filePath)) {
+        await unlink(filePath);
+        return true;
+    }
+    else return false;
 };
 
 exports.say.defaultText2Sound = defaultText2Sound;

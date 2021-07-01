@@ -29,6 +29,7 @@ exports.defaultText2Sound = async (text, option) => {
             },
             client = new TtsClient(clientConfig),
             params = {
+                VoiceType: option.voiceType,
                 ModelType: 1,
                 SessionId: "1",
                 Text: text
@@ -40,7 +41,8 @@ exports.defaultText2Sound = async (text, option) => {
 exports.defaultText2Sound.Option = class {
     static option = {
         secretId: "",
-        secretKey: ""
+        secretKey: "",
+        voiceType: 7 // 默认云小曼
     }
     constructor (option = {}) { initOption(this, exports.defaultText2Sound.Option.option, option); }
 };
