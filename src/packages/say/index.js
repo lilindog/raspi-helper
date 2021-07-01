@@ -1,6 +1,6 @@
 "use strict";
 
-const { execSync } = require("child_process");
+const { exec } = require("child_process");
 const { mkdirSync, existsSync, writeFileSync } = require("fs");
 const { defaultText2Sound } = require("./lib");
 const path = require("path");
@@ -27,13 +27,15 @@ exports.say = async (text, value) => {
     }
     if (!existsSync(tempDir)) mkdirSync(tempDir);
     writeFileSync(filePath, buf);
-    play();
+    await play();
     function play () {
-        try {
-            execSync(`play -v 1 ${filePath}`);
-        } catch (err) {
-            throw "没有安装 sox，无法执行播放！";
-        }
+        return new Promise((resolve, reject) => {
+            exec(`omxplayer ${filePath}`, (err, stdout, stderr) => {
+                if (err) return reject(err);
+                resolve({ stdout, stderr });
+            });
+        });
     }
 };
+
 exports.say.defaultText2Sound = defaultText2Sound;
