@@ -33,7 +33,11 @@ exports.say = async (text, value) => {
     await play();
     function play () {
         return new Promise((resolve, reject) => {
-            exec(`omxplayer ${filePath}`, (err, stdout, stderr) => {
+            // omxplayer Raspiberry官网查询资料说是
+            // 音量可调范围在 -6000 ～ 0 之间，我这里
+            // 默认设置为-500（根据我当前的喇叭实测这个
+            // 值最佳）。  
+            exec(`omxplayer -o local --vol -500 ${filePath}`, (err, stdout, stderr) => {
                 if (err) return reject(err);
                 resolve({ stdout, stderr });
             });
