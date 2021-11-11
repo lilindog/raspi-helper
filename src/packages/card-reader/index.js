@@ -72,6 +72,9 @@ class CardReader extends EventEmitter {
         // 设备就绪
         "READY":  "ready"
     };
+    // 是否初始化，用于在写入时候判断之前没有主动调用init方法就抛错终止写入。
+    // 为啥要这样做，一句话讲不清；说就是异步。  
+    #isInit = false;
     #isOpen = false;
     #callback;
     #buffer = [];
@@ -145,6 +148,7 @@ class CardReader extends EventEmitter {
     }
 
     async _write (bytes = []) {
+        if (!this.#isInit) this._throwError("请先调用init方法后再调用其它方法！");
         if (this.#callback) this._throwError("请等待上次命令响应后再写入！");
         // if (this.#callback) return;
         return new Promise((r, reject) => {
@@ -157,7 +161,7 @@ class CardReader extends EventEmitter {
                 clearTimeout(id);
                 this.#callback = undefined;
                 reject();
-            }, 1000);
+            }, 2000);
             this.#serialport.write(Buffer.from(bytes)); 
         });
     }
@@ -166,9 +170,13 @@ class CardReader extends EventEmitter {
      * 初始化，等待设备就绪 
      */
     async init () {
-        if (this.#isOpen) return;
+        if (this.#isOpen) {
+            this.#isInit = true;
+            return;
+        }
         return new Promise(r => {
             this.#callback = () => {
+                this.#isInit = true;
                 this.#callback = undefined;
                 r();
             };
@@ -264,9 +272,9 @@ class CardReader extends EventEmitter {
     /**
      * 设置读卡器keyA、控制位、keyB 
      */
-    setReaderKey () {
-
-    }
+    // setReaderKey (keyA = [], keyB = [], controlBits = []) {
+        
+    // }
 
     /**
      * 读数据块 
@@ -278,7 +286,7 @@ class CardReader extends EventEmitter {
      */
     async readBlock (blockNumber = 1, useKey = "a", isBeep = false) {
         if (blockNumber === 0 || (blockNumber + 1) % 4 === 0) this._throwError("blockNumber 不能为0和控制块！");
-        await this._write(this._buildFrame([
+        return await this._write(this._buildFrame([
             0x01, 
             useKey === "a" ? 0xa3 : useKey === "b" ? 0x5c : 0,
             0x20, 
@@ -300,7 +308,7 @@ class CardReader extends EventEmitter {
         let msg = "";
         if (blockNumber === 0 || (blockNumber + 1) % 4 === 0) 
             msg = "blockNumber 不能为0和控制块！";
-        else if (dataBytes.length > 16) 
+        else if (dataBytes.length !== 16) 
             msg = "数据只能为16字节！";
         if (msg) this._throwError(msg);
         await this._write(this._buildFrame([
@@ -320,7 +328,7 @@ class CardReader extends EventEmitter {
      * @return {Promise<CardReader.BackFrame>} 
      */
     async readCardNumber (isBeep = false) {
-        await this._write(this._buildFrame([
+        return await this._write(this._buildFrame([
             0x01, 0xa1, 0x20, 0x00,
             isBeep ? 0x01 : 0x00,
             0x00
