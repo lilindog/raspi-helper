@@ -270,23 +270,54 @@ class CardReader extends EventEmitter {
 
     /**
      * 读数据块 
+     * 
+     * @param  {Number} blockNumber 块号，只能为非0和非控制块
+     * @param  {String} useKey a|b 使用那个key
+     * @param  {Boolean} isBeep 蜂鸣器是否发声
+     * @return {Promise<CardReader.BackFrame>}
      */
-    readBlock () {
-
+    async readBlock (blockNumber = 1, useKey = "a", isBeep = false) {
+        if (blockNumber === 0 || (blockNumber + 1) % 4 === 0) this._throwError("blockNumber 不能为0和控制块！");
+        await this._write(this._buildFrame([
+            0x01, 
+            useKey === "a" ? 0xa3 : useKey === "b" ? 0x5c : 0,
+            0x20, 
+            blockNumber,
+            isBeep ? 0x01 : 0x00,
+            0x00
+        ]));
     }
 
     /**
      * 写数据块 
+     * 
+     * @param  {Number} blockNumber 块号
+     * @param  {String} useKey 使用那个key a|b
+     * @param  {Boolean} isBeep 蜂鸣器是否发声
+     * @return {Promise<CardReader.BackFrame}
      */
-    writeBlock () {
-
+    async writeBlock (blockNumber = 1, useKey = "a", isBeep = false, dataBytes = []) {
+        let msg = "";
+        if (blockNumber === 0 || (blockNumber + 1) % 4 === 0) 
+            msg = "blockNumber 不能为0和控制块！";
+        else if (dataBytes.length > 16) 
+            msg = "数据只能为16字节！";
+        if (msg) this._throwError(msg);
+        await this._write(this._buildFrame([
+            0x01,
+            useKey === "a" ? 0xa4 : useKey === "b" ? 0x5b : 0,
+            0x20,
+            blockNumber,
+            isBeep ? 0x01 : 0x00,
+            ...dataBytes
+        ]));
     }
 
     /**
      * 读卡号
      * 
      * @param  {Boolean} isBeep 蜂鸣器是否发声
-     * @return {Promise<String>} 
+     * @return {Promise<CardReader.BackFrame>} 
      */
     async readCardNumber (isBeep = false) {
         await this._write(this._buildFrame([
