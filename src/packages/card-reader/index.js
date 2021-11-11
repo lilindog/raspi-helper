@@ -33,7 +33,7 @@ class BackFrame extends ParamsType {
         // 数据字节
         data: undefined,
         // 校验位
-        check_sum: -1,
+        check_sum: -1
     }
     constructor (params = {}) {
         super(params);
@@ -280,6 +280,20 @@ class CardReader extends EventEmitter {
      */
     writeBlock () {
 
+    }
+
+    /**
+     * 读卡号
+     * 
+     * @param  {Boolean} isBeep 蜂鸣器是否发声
+     * @return {Promise<String>} 
+     */
+    async readCardNumber (isBeep = false) {
+        await this._write(this._buildFrame([
+            0x01, 0xa1, 0x20, 0x00,
+            isBeep ? 0x01 : 0x00,
+            0x00
+        ]));
     }
 }
 
