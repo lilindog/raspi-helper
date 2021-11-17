@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 const { runCmds } = require("./comm");
 const chalk = require("chalk");

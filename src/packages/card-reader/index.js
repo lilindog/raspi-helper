@@ -136,7 +136,7 @@ class CardReader extends EventEmitter {
         }
         this.#buffer = this.#buffer.slice(bf.packet_length);
     }
- 
+
     _buildFrame (bytes = []) {
         // 第二个字节表示长度
         bytes.splice(1, 0, bytes.length + 2);
